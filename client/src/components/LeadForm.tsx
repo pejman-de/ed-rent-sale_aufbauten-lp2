@@ -173,7 +173,7 @@ export default function LeadForm() {
       const trackingData = {
         ...data,
         offer_type: "aufbau",
-        lead_path: data.lead_type === "paket" ? "B2B-Hersteller-Pfad" : "Standard-Express-Pfad",
+        lead_path: data.lead_type === "paket" ? "B2B-Hersteller-Pfad" : "Standard-Einzel-Pfad",
         leadScore: calculatedScore.points,
         leadGrade: { A: "Hot", B: "Warm", C: "Cold" }[calculatedScore.grade],
         utm_source: new URLSearchParams(window.location.search).get("utm_source") || "direct",
