@@ -101,7 +101,7 @@ export default function LeadForm() {
       ];
 
   // Lead-Scoring Algorithm (Brevo-Master-Scoring compatible: Hot >=70, Warm 40-69, Cold <40)
-  const calculateLeadScore = (data: LeadFormValues): "A" | "B" | "C" => {
+  const calculateLeadScore = (data: LeadFormValues): { grade: "A" | "B" | "C"; points: number } => {
     const today = new Date();
     const isFahrgestellJa = data.fahrgestell_vorhanden === "Ja";
 
@@ -150,9 +150,11 @@ export default function LeadForm() {
     }
 
     // Map points to Score A, B, C (A = Hot >= 70, B = Warm 40-69, C = Cold < 40)
-    if (points >= 70) return "A";
-    if (points >= 40) return "B";
-    return "C";
+    let grade: "A" | "B" | "C";
+    if (points >= 70) grade = "A";
+    else if (points >= 40) grade = "B";
+    else grade = "C";
+    return { grade, points };
   };
 
   const onSubmit = async (data: LeadFormValues) => {
@@ -172,6 +174,8 @@ export default function LeadForm() {
         ...data,
         offer_type: "aufbau",
         lead_path: data.lead_type === "paket" ? "B2B-Hersteller-Pfad" : "Standard-Express-Pfad",
+        leadScore: calculatedScore.points,
+        leadGrade: { A: "Hot", B: "Warm", C: "Cold" }[calculatedScore.grade],
         utm_source: new URLSearchParams(window.location.search).get("utm_source") || "direct",
         utm_medium: new URLSearchParams(window.location.search).get("utm_medium") || "none",
         utm_campaign: new URLSearchParams(window.location.search).get("utm_campaign") || "none",
@@ -191,7 +195,7 @@ export default function LeadForm() {
 
       setSubmitResult({
         success: true,
-        score: calculatedScore,
+        score: calculatedScore.grade,
         payload: trackingData,
       });
 
