@@ -172,7 +172,6 @@ export default function LeadForm() {
         ...data,
         offer_type: "aufbau",
         lead_path: data.lead_type === "paket" ? "B2B-Hersteller-Pfad" : "Standard-Express-Pfad",
-        page_variant: "lp-aufbauten",
         utm_source: new URLSearchParams(window.location.search).get("utm_source") || "direct",
         utm_medium: new URLSearchParams(window.location.search).get("utm_medium") || "none",
         utm_campaign: new URLSearchParams(window.location.search).get("utm_campaign") || "none",
@@ -634,7 +633,6 @@ export default function LeadForm() {
               {/* Hidden Tracking Fields */}
               <input type="hidden" value="aufbau" {...register("offer_type" as any)} />
               <input type="hidden" value={leadType === "paket" ? "B2B-Hersteller-Pfad" : "Standard-Express-Pfad"} {...register("lead_path" as any)} />
-              <input type="hidden" value="lp-aufbauten" {...register("page_variant" as any)} />
             </div>
           )}
         </div>
