@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -6,6 +6,13 @@ import { toast } from "sonner";
 import { CheckCircle2, AlertCircle, Send, ArrowRight } from "lucide-react";
 import { Link } from "wouter";
 import { useLeadFormModal } from "@/contexts/LeadFormModalContext";
+import {
+  trackModalStepView,
+  trackModalStepCompleted,
+  trackFormError,
+  trackFormStart,
+  trackFormSubmit,
+} from "@/lib/analytics";
 
 // Form Validation Schema with Zod (German error messages)
 const leadFormSchema = z.object({
@@ -40,7 +47,7 @@ const inputClass = "w-full border border-brand-grey/30 focus:border-brand-cyan f
 const selectClass = `${inputClass} appearance-none`;
 
 export default function LeadForm() {
-  const { closeLeadForm } = useLeadFormModal();
+  const { closeLeadForm, reportStep, reportCompleted } = useLeadFormModal();
   const formRootRef = useRef<HTMLDivElement>(null);
 
   const [step, setStep] = useState(1);
@@ -100,6 +107,14 @@ export default function LeadForm() {
         { label: "Kontaktdaten" },
       ];
 
+  // Bei jedem Mount (= jedes Öffnen des Modals) Schritt 1 + form_start tracken
+  useEffect(() => {
+    trackModalStepView(1, stepsMeta[0].label, totalSteps);
+    trackFormStart();
+    reportStep(1);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   // Lead-Scoring Algorithm (Brevo-Master-Scoring compatible: Hot >=70, Warm 40-69, Cold <40)
   const calculateLeadScore = (data: LeadFormValues): { grade: "A" | "B" | "C"; points: number } => {
     const today = new Date();
@@ -158,7 +173,9 @@ export default function LeadForm() {
   };
 
   const onSubmit = async (data: LeadFormValues) => {
-    // Honeypot: Feld ist für echte Nutzer unsichtbar, wird nur von Bots befüllt
+    // Honeypot: Feld ist für echte Nutzer unsichtbar, wird nur von Bots befüllt.
+    // Bewusst KEIN form_submit/reportCompleted hier, damit Bot-Treffer die
+    // Conversion-Zahlen nicht verfälschen.
     if (data.website) {
       setSubmitResult({ success: true, score: "C" });
       return;
@@ -193,6 +210,14 @@ export default function LeadForm() {
         throw new Error(`Server antwortete mit Status ${response.status}`);
       }
 
+      // Wichtig: reportCompleted() VOR setSubmitResult, damit ein direkt
+      // folgendes Schließen des Modals NICHT zusätzlich als form_abandon zählt.
+      reportCompleted();
+      trackFormSubmit("lp2_expressangebot", totalSteps, {
+        lead_grade: { A: "Hot", B: "Warm", C: "Cold" }[calculatedScore.grade],
+        lead_type: data.lead_type,
+      });
+
       setSubmitResult({
         success: true,
         score: calculatedScore.grade,
@@ -203,6 +228,7 @@ export default function LeadForm() {
         description: "Unser B2B-Team meldet sich innerhalb von 24 Stunden bei Ihnen.",
       });
     } catch (error) {
+      trackFormError(contactStep, ["submit_failed"]);
       toast.error("Fehler beim Senden.", {
         description: "Bitte überprüfen Sie Ihre Angaben und versuchen Sie es erneut.",
       });
@@ -229,9 +255,15 @@ export default function LeadForm() {
 
     const isValid = await trigger(fieldsToValidate);
     if (isValid) {
+      trackModalStepCompleted(step, stepsMeta[step - 1]?.label ?? `step_${step}`);
+      const nextStep = step + 1;
+      trackModalStepView(nextStep, stepsMeta[nextStep - 1]?.label ?? `step_${nextStep}`, totalSteps);
+      reportStep(nextStep);
       setStep((s) => s + 1);
       scrollFormToTop();
     } else {
+      const invalidFields = fieldsToValidate.filter((f) => !!errors[f]);
+      trackFormError(step, invalidFields);
       toast.error("Unvollständige Angaben", {
         description: "Bitte füllen Sie alle Pflichtfelder in diesem Schritt aus.",
       });
@@ -239,6 +271,8 @@ export default function LeadForm() {
   };
 
   const handleBack = () => {
+    const prevStep = Math.max(1, step - 1);
+    reportStep(prevStep);
     setStep((s) => Math.max(1, s - 1));
     scrollFormToTop();
   };
