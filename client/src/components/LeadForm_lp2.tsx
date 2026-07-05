@@ -101,7 +101,7 @@ export default function LeadForm() {
       ];
 
   // Lead-Scoring Algorithm (Brevo-Master-Scoring compatible: Hot >=70, Warm 40-69, Cold <40)
-  const calculateLeadScore = (data: LeadFormValues): { grade: "A" | "B" | "C"; points: number } => {
+  const calculateLeadScore = (data: LeadFormValues): "A" | "B" | "C" => {
     const today = new Date();
     const isFahrgestellJa = data.fahrgestell_vorhanden === "Ja";
 
@@ -150,11 +150,9 @@ export default function LeadForm() {
     }
 
     // Map points to Score A, B, C (A = Hot >= 70, B = Warm 40-69, C = Cold < 40)
-    let grade: "A" | "B" | "C";
-    if (points >= 70) grade = "A";
-    else if (points >= 40) grade = "B";
-    else grade = "C";
-    return { grade, points };
+    if (points >= 70) return "A";
+    if (points >= 40) return "B";
+    return "C";
   };
 
   const onSubmit = async (data: LeadFormValues) => {
@@ -173,9 +171,7 @@ export default function LeadForm() {
       const trackingData = {
         ...data,
         offer_type: "aufbau",
-        lead_path: data.lead_type === "paket" ? "B2B-Hersteller-Pfad" : "Standard-Einzel-Pfad",
-        leadScore: calculatedScore.points,
-        leadGrade: { A: "Hot", B: "Warm", C: "Cold" }[calculatedScore.grade],
+        lead_path: data.lead_type === "paket" ? "B2B-Hersteller-Pfad" : "Standard-Express-Pfad",
         utm_source: new URLSearchParams(window.location.search).get("utm_source") || "direct",
         utm_medium: new URLSearchParams(window.location.search).get("utm_medium") || "none",
         utm_campaign: new URLSearchParams(window.location.search).get("utm_campaign") || "none",
@@ -195,7 +191,7 @@ export default function LeadForm() {
 
       setSubmitResult({
         success: true,
-        score: calculatedScore.grade,
+        score: calculatedScore,
         payload: trackingData,
       });
 
@@ -589,7 +585,7 @@ export default function LeadForm() {
 
                 {/* Spezifikation / Freitext */}
                 <div className="space-y-2 md:col-span-2">
-                  <label className="block text-xs uppercase font-bold text-brand-navy tracking-wider">Spezifikationen / Anmerkungen (Optional)</label>
+                  <label className="block text-xs uppercase font-bold text-brand-navy tracking-wider">Spezifikationen / Anmerkungen</label>
                   <textarea
                     placeholder="Teilen Sie uns hier gerne weitere Details zu Ihrem Projekt mit (z.B. geplantes Trägerfahrzeug, Maße, Sonderwünsche)."
                     rows={3}
