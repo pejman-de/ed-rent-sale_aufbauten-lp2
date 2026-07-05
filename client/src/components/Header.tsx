@@ -2,6 +2,7 @@ import { Phone, ArrowRight } from "lucide-react";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { useLeadFormModal } from "@/contexts/LeadFormModalContext";
+import { trackClick } from "@/lib/analytics";
 
 export default function Header() {
   const { openLeadForm } = useLeadFormModal();
@@ -25,6 +26,14 @@ export default function Header() {
         <div className="flex items-center gap-4 md:gap-8">
           <a
             href="tel:+4921758845535"
+            onClick={() =>
+              trackClick("phone_click", {
+                element_id: "header_phone",
+                element_text: "+49 2175 8845535",
+                element_location: "header",
+                destination_url: "tel:+4921758845535",
+              })
+            }
             className="hidden items-center gap-2 text-sm font-semibold text-brand-navy hover:text-brand-cyan transition-colors sm:flex md:text-base"
           >
             <Phone className="h-4 w-4 text-brand-cyan" />
@@ -32,7 +41,14 @@ export default function Header() {
           </a>
           
           <Button
-            onClick={openLeadForm}
+            onClick={() => {
+              trackClick("cta_click", {
+                element_id: "header_cta",
+                element_text: "Anfrage starten",
+                element_location: "header",
+              });
+              openLeadForm(undefined, "header_cta");
+            }}
             className="bg-brand-cyan text-brand-navy hover:bg-brand-cyan/90 font-bold px-4 py-2 text-xs md:text-sm md:px-6 md:py-3 shadow-md hover:shadow-brand-cyan/20 hover:shadow-lg transition-all active:scale-95 flex items-center gap-2"
           >
             <span>Anfrage starten</span>

@@ -20,12 +20,25 @@ import BeforeAfterSlider from "@/components/BeforeAfterSlider";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { useLeadFormModal } from "@/contexts/LeadFormModalContext";
+import { trackClick, trackFaqToggle } from "@/lib/analytics";
+import { useScrollDepth } from "@/hooks/useScrollDepth";
+import { useSectionView } from "@/hooks/useSectionView";
 
 export default function Home() {
   const [activeFaq, setActiveFaq] = useState<number | null>(null);
   const { openLeadForm } = useLeadFormModal();
+  useScrollDepth();
+
+  const manufacturersRef = useSectionView<HTMLElement>("manufacturers_section");
+  const categoriesRef = useSectionView<HTMLElement>("categories_section");
+  const processRef = useSectionView<HTMLElement>("process_metrics_section");
+  const dealerRef = useSectionView<HTMLElement>("dealer_framework_section");
+  const proofRef = useSectionView<HTMLElement>("proof_block_section");
+  const faqRef = useSectionView<HTMLElement>("faq_section");
 
   const toggleFaq = (index: number) => {
+    const opening = activeFaq !== index;
+    trackFaqToggle(faqs[index]?.q ?? `faq_${index}`, opening);
     setActiveFaq(activeFaq === index ? null : index);
   };
 
@@ -183,13 +196,19 @@ export default function Home() {
 
               <div className="flex flex-wrap gap-4 pt-2">
                 <button 
-                  onClick={openLeadForm}
+                  onClick={() => {
+                    trackClick("cta_click", { element_id: "hero_primary_cta", element_text: "Anfrage starten", element_location: "hero" });
+                    openLeadForm(undefined, "hero_primary_cta");
+                  }}
                   className="w-full md:w-[341px] bg-brand-cyan text-brand-navy hover:bg-brand-cyan/90 font-bold text-base h-12 px-8 shadow-lg shadow-brand-cyan/10 hover:shadow-brand-cyan/20 transition-all active:scale-97 flex items-center justify-center rounded-xl"
                 >
                   Anfrage starten
                 </button>
                 <button
-                  onClick={scrollToCategories}
+                  onClick={() => {
+                    trackClick("link_click", { element_id: "hero_secondary_cta", element_text: "Aufbauarten ansehen", element_location: "hero", destination_url: "#categories" });
+                    scrollToCategories();
+                  }}
                   className="w-full md:w-[341px] inline-flex items-center justify-center border-2 border-brand-navy text-brand-navy hover:bg-brand-navy hover:text-white font-semibold text-base h-12 px-8 transition-all active:scale-97 rounded-xl"
                 >
                   Aufbauarten ansehen
@@ -239,7 +258,10 @@ export default function Home() {
               Während die Konkurrenz 3 Monate plant, fährt Ihr Fahrzeug schon raus.
             </h2>
             <button 
-              onClick={openLeadForm}
+              onClick={() => {
+                trackClick("cta_click", { element_id: "usp_banner_cta", element_text: "Anfrage starten", element_location: "usp_banner" });
+                openLeadForm(undefined, "usp_banner_cta");
+              }}
               className="bg-brand-cyan text-brand-navy hover:bg-brand-cyan/90 font-bold text-base h-12 px-8 shadow-lg shadow-brand-cyan/10 hover:shadow-brand-cyan/20 transition-all active:scale-97 flex items-center justify-center rounded-xl whitespace-nowrap"
             >
               Anfrage starten
@@ -248,7 +270,7 @@ export default function Home() {
         </section>
 
         {/* Social Proof Section */}
-        <section className="py-20 bg-brand-light border-y border-brand-grey/10">
+        <section ref={manufacturersRef} className="py-20 bg-brand-light border-y border-brand-grey/10">
           <div className="container">
             <div className="text-center max-w-3xl mx-auto mb-16">
               <span className="text-xs font-bold uppercase tracking-wider text-brand-cyan">Kompatibilität</span>
@@ -275,7 +297,7 @@ export default function Home() {
         </section>
 
         {/* Category Selection Grid */}
-        <section id="categories" className="py-20 bg-white">
+        <section id="categories" ref={categoriesRef} className="py-20 bg-white">
           <div className="container">
             <div className="text-center max-w-3xl mx-auto mb-16">
               <span className="text-xs font-bold uppercase tracking-wider text-brand-cyan">Portfolio</span>
@@ -320,7 +342,15 @@ export default function Home() {
                     </ul>
 
                     <button 
-                      onClick={openLeadForm}
+                      onClick={() => {
+                        trackClick("tile_click", {
+                          element_id: `tile_${cat.tag}`,
+                          element_text: "zum Formular",
+                          element_location: "categories",
+                          extra: { category_name: cat.tag },
+                        });
+                        openLeadForm(undefined, "category_tile");
+                      }}
                       className="text-xs font-bold text-brand-navy hover:text-brand-cyan uppercase tracking-widest flex items-center gap-1 group/btn pt-2 transition-colors duration-200 cursor-pointer"
                     >
                       <span>zum Formular</span>
@@ -334,7 +364,7 @@ export default function Home() {
         </section>
 
         {/* Process & Metrics */}
-        <section className="py-20 bg-brand-light border-y border-brand-grey/10">
+        <section ref={processRef} className="py-20 bg-brand-light border-y border-brand-grey/10">
           <div className="container space-y-16">
             {/* Metrics Grid */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
@@ -381,7 +411,7 @@ export default function Home() {
         </section>
 
         {/* Manufacturer Path (Power-Conversion Container) */}
-        <section className="py-20 bg-white">
+        <section ref={dealerRef} className="py-20 bg-white">
           <div className="container">
             <div className="bg-brand-navy text-white p-8 md:p-12 rounded-2xl shadow-2xl relative overflow-hidden border border-white/5">
               {/* Tech Grid Background */}
@@ -419,14 +449,33 @@ export default function Home() {
 
                 <div className="lg:col-span-4 flex flex-col justify-center space-y-4">
                   <button 
-                    onClick={openLeadForm}
+                    onClick={() => {
+                      trackClick("cta_click", {
+                        element_id: "dealer_framework_cta",
+                        element_text: "Rahmenvertrag anfragen",
+                        element_location: "dealer_framework",
+                        extra: { intended_lead_type: "paket" },
+                      });
+                      openLeadForm(undefined, "dealer_framework_cta");
+                    }}
                     className="w-full md:w-[281px] mx-auto bg-brand-cyan text-brand-navy hover:bg-brand-cyan/90 font-bold text-base h-12 shadow-lg shadow-brand-cyan/10 hover:shadow-brand-cyan/20 transition-all active:scale-97 flex items-center justify-center rounded-xl uppercase tracking-wider"
                   >
                     Rahmenvertrag anfragen
                   </button>
                   <p className="text-center text-xs text-slate-400">
                     Direkt-Durchwahl Großkunden: <br />
-                    <a href="tel:+4921758845535" className="underline font-bold text-white hover:text-brand-cyan transition-colors">+49 2175 8845535</a>
+                    <a
+                      href="tel:+4921758845535"
+                      onClick={() =>
+                        trackClick("phone_click", {
+                          element_id: "dealer_framework_phone",
+                          element_text: "+49 2175 8845535",
+                          element_location: "dealer_framework",
+                          destination_url: "tel:+4921758845535",
+                        })
+                      }
+                      className="underline font-bold text-white hover:text-brand-cyan transition-colors"
+                    >+49 2175 8845535</a>
                   </p>
                 </div>
               </div>
@@ -435,7 +484,7 @@ export default function Home() {
         </section>
 
         {/* Proof Block */}
-        <section className="py-20 bg-brand-light border-y border-brand-grey/10">
+        <section ref={proofRef} className="py-20 bg-brand-light border-y border-brand-grey/10">
           <div className="container space-y-12">
             <div className="text-center max-w-3xl mx-auto">
               <span className="text-xs font-bold uppercase tracking-wider text-brand-cyan">Qualitätssicherung</span>
@@ -481,7 +530,10 @@ export default function Home() {
                   Präzise Taktfertigung sichert Ihren Vorsprung. Das Formular dauert 2 Minuten, wir melden uns innerhalb von 24h.
                 </p>
                 <button
-                  onClick={openLeadForm}
+                  onClick={() => {
+                    trackClick("cta_click", { element_id: "express_offer_cta", element_text: "Express-Angebot anfordern", element_location: "lead_form_cta_section" });
+                    openLeadForm(undefined, "express_offer_cta");
+                  }}
                   className="bg-brand-cyan text-brand-navy hover:bg-brand-cyan/90 font-bold text-base h-12 px-8 shadow-lg shadow-brand-cyan/10 hover:shadow-brand-cyan/20 transition-all active:scale-97 inline-flex items-center justify-center gap-2 rounded-xl"
                 >
                   <span>Express-Angebot anfordern</span>
@@ -493,7 +545,7 @@ export default function Home() {
         </section>
 
         {/* FAQ Section */}
-        <section className="py-20 bg-brand-light border-y border-brand-grey/10">
+        <section ref={faqRef} className="py-20 bg-brand-light border-y border-brand-grey/10">
           <div className="container max-w-3xl space-y-12">
             <div className="text-center">
               <span className="text-xs font-bold uppercase tracking-wider text-brand-cyan">FAQ</span>
