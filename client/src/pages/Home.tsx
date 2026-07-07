@@ -524,8 +524,8 @@ export default function Home() {
             <div className="bg-white rounded-2xl border border-brand-grey/15 p-8 md:p-12 shadow-xl relative overflow-hidden text-center">
               <div className="absolute inset-0 bg-[linear-gradient(to_right,#6e7c950a_1px,transparent_1px),linear-gradient(to_bottom,#6e7c950a_1px,transparent_1px)] bg-[size:4rem_4rem] pointer-events-none" />
               <div className="relative z-10 space-y-6">
-                <span className="text-xs font-bold uppercase tracking-wider text-brand-cyan">Express-Konfigurator</span>
-                <h2 className="text-3xl font-extrabold text-brand-navy tracking-tight">Konfigurieren Sie Ihr invidivuelles Angebot</h2>
+                <span className="text-xs font-bold uppercase tracking-wider text-brand-cyan">Aufbauten-Konfigurator</span>
+                <h2 className="text-3xl font-extrabold text-brand-navy tracking-tight">Bereit für Ihr Express-Angebot?</h2>
                 <p className="text-brand-grey text-lg max-w-xl mx-auto">
                   Präzise Taktfertigung sichert Ihren Vorsprung. Das Formular dauert 2 Minuten, wir melden uns innerhalb von 24h.
                 </p>
