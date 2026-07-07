@@ -25,7 +25,7 @@ export default function Footer({ onScrollToTop }: FooterProps) {
               />
             </div>
             <p className="text-sm text-white max-w-sm leading-relaxed">
-              Ihr zuverlässiger B2B-Partner für hochwertige Nutzfahrzeuge im Raum Leichlingen, Köln und Düsseldorf. Flexibel, schnell und sauber gewartet.
+              Ihr zuverlässiger Partner für hochwertige Nutzfahrzeuge im Raum Leichlingen, Köln und Düsseldorf. Flexibel, schnell und sauber gewartet.
             </p>
             <div className="flex items-start gap-3 text-xs text-white">
               <Clock className="h-4 w-4 text-brand-cyan shrink-0 mt-0.5" />
