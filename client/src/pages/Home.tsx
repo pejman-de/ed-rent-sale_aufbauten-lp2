@@ -178,7 +178,7 @@ export default function Home() {
             <div className="lg:col-span-6 space-y-6">
               <div className="inline-flex items-center gap-2 rounded-full border border-brand-cyan/30 bg-brand-cyan/10 px-3 py-1 text-xs font-semibold text-brand-navy md:text-sm">
                 <span className="flex h-2 w-2 rounded-full bg-brand-cyan animate-pulse" />
-                B2B EXPRESS-FERTIGUNG
+                EXPRESS-AUFBAUTEN FÜR GESCHÄFTSKUNDEN
               </div>
               
               <h1 className="text-4xl font-extrabold tracking-tight text-brand-navy sm:text-5xl md:text-6xl lg:leading-[1.1]">
@@ -391,7 +391,7 @@ export default function Home() {
                   Vom Fahrgestell zum einsatzbereiten Truck in 4 Schritten
                 </h2>
                 <p className="mt-3 text-lg text-brand-grey">
-                  Unser strukturierter B2B-Prozess garantiert maximale Geschwindigkeit ohne Abstriche bei der Qualität.
+                  Unser strukturierter Prozess garantiert maximale Geschwindigkeit ohne Abstriche bei der Qualität.
                 </p>
               </div>
 
@@ -524,8 +524,8 @@ export default function Home() {
             <div className="bg-white rounded-2xl border border-brand-grey/15 p-8 md:p-12 shadow-xl relative overflow-hidden text-center">
               <div className="absolute inset-0 bg-[linear-gradient(to_right,#6e7c950a_1px,transparent_1px),linear-gradient(to_bottom,#6e7c950a_1px,transparent_1px)] bg-[size:4rem_4rem] pointer-events-none" />
               <div className="relative z-10 space-y-6">
-                <span className="text-xs font-bold uppercase tracking-wider text-brand-cyan">B2B Express-Konfigurator</span>
-                <h2 className="text-3xl font-extrabold text-brand-navy tracking-tight">Jetzt Express-Angebot anfordern</h2>
+                <span className="text-xs font-bold uppercase tracking-wider text-brand-cyan">Express-Konfigurator</span>
+                <h2 className="text-3xl font-extrabold text-brand-navy tracking-tight">Konfigurieren Sie Ihr invidivuelles Angebot</h2>
                 <p className="text-brand-grey text-lg max-w-xl mx-auto">
                   Präzise Taktfertigung sichert Ihren Vorsprung. Das Formular dauert 2 Minuten, wir melden uns innerhalb von 24h.
                 </p>
