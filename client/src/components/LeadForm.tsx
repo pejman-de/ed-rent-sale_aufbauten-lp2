@@ -327,7 +327,7 @@ export default function LeadForm() {
         <div className="relative z-10 shrink-0 px-6 pt-16 sm:pt-10 md:px-10 md:pt-10">
           <div className="text-center max-w-2xl mx-auto">
             <span className="text-xs font-bold uppercase tracking-wider text-brand-cyan">Express-Konfigurator</span>
-            <h3 className="text-2xl sm:text-3xl font-extrabold text-brand-navy tracking-tight leading-tight mt-2">Bereit für Ihr invidviduelles Angebot?</h3>
+            <h3 className="text-2xl sm:text-3xl font-extrabold text-brand-navy tracking-tight leading-tight mt-2">Individuelles Angebot anfordern.</h3>
             <p className="text-brand-grey text-sm mt-2 leading-relaxed">
               Präzise Taktfertigung sichert Ihren Vorsprung. Füllen Sie das Formular in 2 Minuten aus und wir melden uns innerhalb von 24h.
             </p>
