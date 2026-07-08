@@ -351,7 +351,7 @@ export default function Home() {
                           element_location: "categories",
                           extra: { category_name: cat.tag },
                         });
-                        openLeadForm(undefined, "category_tile");
+                        openLeadForm(cat.tag, "category_tile");
                       }}
                       className="text-xs font-bold text-brand-navy hover:text-brand-cyan uppercase tracking-widest flex items-center gap-1 group/btn pt-2 transition-colors duration-200 cursor-pointer"
                     >
