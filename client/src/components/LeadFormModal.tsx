@@ -4,7 +4,7 @@ import LeadForm from "@/components/LeadForm";
 import { useLeadFormModal } from "@/contexts/LeadFormModalContext";
 
 export default function LeadFormModal() {
-  const { isOpen, closeLeadForm } = useLeadFormModal();
+  const { isOpen, renderKey, closeLeadForm } = useLeadFormModal();
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && closeLeadForm("overlay_click")}>
@@ -21,7 +21,7 @@ export default function LeadFormModal() {
           <span className="sr-only">Schließen</span>
         </DialogClose>
         <div className="flex-1 min-h-0 flex flex-col">
-          <LeadForm />
+          <LeadForm key={renderKey} />
         </div>
       </DialogContent>
     </Dialog>

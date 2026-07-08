@@ -47,7 +47,7 @@ const inputClass = "w-full border border-brand-grey/30 focus:border-brand-cyan f
 const selectClass = `${inputClass} appearance-none`;
 
 export default function LeadForm() {
-  const { closeLeadForm, reportStep, reportCompleted } = useLeadFormModal();
+  const { selectedCategory, closeLeadForm, reportStep, reportCompleted } = useLeadFormModal();
   const formRootRef = useRef<HTMLDivElement>(null);
 
   const [step, setStep] = useState(1);
@@ -72,7 +72,7 @@ export default function LeadForm() {
     mode: "onTouched",
     defaultValues: {
       lead_type: "einzel",
-      aufbauart: "",
+      aufbauart: selectedCategory ?? "",
       fahrgestell_vorhanden: "Nein",
       wunschzeitraum: "",
       einsatzregion: "",
