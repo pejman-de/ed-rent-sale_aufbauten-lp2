@@ -47,6 +47,8 @@ export default function Home() {
   const finishedImg = "/images/truck-finished.webp";
   const kipperImg = "/images/kipper-truck.webp";
   const pritscheImg = "/images/pritsche-truck.webp";
+  const kofferImg = "/images/koffer-truck.webp";
+  const spezialImg = "/images/spezial-truck.webp";
 
   // Manufacturer logos
   const manufacturers = [
@@ -70,7 +72,7 @@ export default function Home() {
       title: "Kofferaufbau",
       desc: "Isolierte oder Standard-Kofferaufbauten für Trockenfracht und Logistik. Leichtbauweise für maximale Nutzlast.",
       features: ["GFK-Sandwichpaneele", "Zurrschienen-System", "Ladebordwand-Option"],
-      img: finishedImg,
+      img: kofferImg,
       tag: "Kofferaufbau"
     },
     {
@@ -84,7 +86,7 @@ export default function Home() {
       title: "Spezialaufbauten",
       desc: "Maßgeschneiderte Sonderlösungen für Kommunen, Energieversorger oder Schwerlast. Exakt nach CAD-Vorgabe.",
       features: ["CAD-Sonderkonstruktion", "Spezial-Hydraulik", "Individueller Innenausbau"],
-      img: chassisImg,
+      img: spezialImg,
       tag: "Spezial"
     }
   ];
