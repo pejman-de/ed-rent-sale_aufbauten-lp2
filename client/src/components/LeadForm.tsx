@@ -12,7 +12,9 @@ import {
   trackFormError,
   trackFormStart,
   trackFormSubmit,
+  trackFormSubmitFailed,
 } from "@/lib/analytics";
+import { getLeadContext } from "@/lib/leadContext";
 
 // Form Validation Schema with Zod (German error messages)
 const leadFormSchema = z.object({
@@ -193,11 +195,7 @@ export default function LeadForm() {
         lead_path: data.lead_type === "paket" ? "B2B-Hersteller-Pfad" : "Standard-Einzel-Pfad",
         leadScore: calculatedScore.points,
         leadGrade: { A: "Hot", B: "Warm", C: "Cold" }[calculatedScore.grade],
-        utm_source: new URLSearchParams(window.location.search).get("utm_source") || "direct",
-        utm_medium: new URLSearchParams(window.location.search).get("utm_medium") || "none",
-        utm_campaign: new URLSearchParams(window.location.search).get("utm_campaign") || "none",
-        utm_term: new URLSearchParams(window.location.search).get("utm_term") || "none",
-        utm_content: new URLSearchParams(window.location.search).get("utm_content") || "none",
+        ...getLeadContext(),
       };
 
       const response = await fetch(import.meta.env.VITE_LEAD_ENDPOINT, {
@@ -206,15 +204,31 @@ export default function LeadForm() {
         body: JSON.stringify(trackingData),
       });
 
+      const ergebnis = await response.json().catch(() => ({} as Record<string, unknown>));
+
       if (!response.ok) {
-        throw new Error(`Server antwortete mit Status ${response.status}`);
+        const referenz = typeof ergebnis.reference === "string" ? ergebnis.reference : undefined;
+        trackFormSubmitFailed("lp2_expressangebot", response.status, referenz);
+        toast.error("Fehler beim Senden.", {
+          description: referenz
+            ? `Bitte erneut versuchen. Referenznummer: ${referenz}`
+            : "Bitte überprüfen Sie Ihre Angaben und versuchen Sie es erneut.",
+        });
+        return;
       }
+
+      // Der Worker rechnet den Score selbst und liefert ihn zurueck. Der
+      // Clientwert dient nur noch als Rueckfallebene fuer GA4.
+      const serverGrade =
+        typeof ergebnis.leadGrade === "string"
+          ? ergebnis.leadGrade
+          : { A: "Hot", B: "Warm", C: "Cold" }[calculatedScore.grade];
 
       // Wichtig: reportCompleted() VOR setSubmitResult, damit ein direkt
       // folgendes Schließen des Modals NICHT zusätzlich als form_abandon zählt.
       reportCompleted();
       trackFormSubmit("lp2_expressangebot", totalSteps, {
-        lead_grade: { A: "Hot", B: "Warm", C: "Cold" }[calculatedScore.grade],
+        lead_grade: serverGrade,
         lead_type: data.lead_type,
       });
 
@@ -228,9 +242,9 @@ export default function LeadForm() {
         description: "Unsere Experten melden sich innerhalb von 24 Stunden bei Ihnen.",
       });
     } catch (error) {
-      trackFormError(contactStep, ["submit_failed"]);
-      toast.error("Fehler beim Senden.", {
-        description: "Bitte überprüfen Sie Ihre Angaben und versuchen Sie es erneut.",
+      trackFormSubmitFailed("lp2_expressangebot", 0);
+      toast.error("Die Verbindung wurde unterbrochen.", {
+        description: "Bitte prüfen Sie Ihre Internetverbindung und senden Sie erneut.",
       });
     } finally {
       setIsSubmitting(false);
