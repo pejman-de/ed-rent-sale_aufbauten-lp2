@@ -18,7 +18,7 @@ export default function Header() {
             className="h-10 md:h-12 w-auto object-contain"
           />
           <div className="border-l border-brand-grey/10 pl-3 hidden sm:block">
-            <span className="text-xs font-bold uppercase tracking-wider text-brand-cyan">Aufbauten-Zentrum</span>
+            <span className="text-xs font-bold uppercase tracking-wider text-brand-cyan">Aufbau-Zentrum</span>
           </div>
         </Link>
 
