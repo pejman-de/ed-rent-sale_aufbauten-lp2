@@ -180,7 +180,7 @@ export default function Home() {
             <div className="lg:col-span-6 space-y-6">
               <div className="inline-flex items-center gap-2 rounded-full border border-brand-cyan/30 bg-brand-cyan/10 px-3 py-1 text-xs font-semibold text-brand-navy md:text-sm">
                 <span className="flex h-2 w-2 rounded-full bg-brand-cyan animate-pulse" />
-                EXPRESS-AUFBAUTEN FÜR GESCHÄFTSKUNDEN
+                EXPRESS-AUFBAU FÜR GESCHÄFTSKUNDEN
               </div>
               
               <h1 className="text-4xl font-extrabold tracking-tight text-brand-navy sm:text-5xl md:text-6xl lg:leading-[1.1]">
@@ -189,7 +189,7 @@ export default function Home() {
               </h1>
               
               <p className="text-lg text-brand-grey leading-relaxed md:text-xl">
-                Deutschlands schnellste Taktfertigung für Nutzfahrzeug-Aufbauten. Bis zu 80 Aufbauten pro Monat in zertifizierter OEM-Qualität. Während andere noch planen, fährt Ihr Fahrzeug schon.
+                Deutschlands schnellste Taktfertigung für den Aufbau von Nutzfahrzeugen. Bis zu 80 Aufbauten pro Monat in zertifizierter OEM-Qualität. Während andere noch planen, fährt Ihr Fahrzeug schon.
               </p>
               
               <p className="text-xs text-brand-grey/80 italic">
@@ -526,7 +526,7 @@ export default function Home() {
             <div className="bg-white rounded-2xl border border-brand-grey/15 p-8 md:p-12 shadow-xl relative overflow-hidden text-center">
               <div className="absolute inset-0 bg-[linear-gradient(to_right,#6e7c950a_1px,transparent_1px),linear-gradient(to_bottom,#6e7c950a_1px,transparent_1px)] bg-[size:4rem_4rem] pointer-events-none" />
               <div className="relative z-10 space-y-6">
-                <span className="text-xs font-bold uppercase tracking-wider text-brand-cyan">Aufbauten-Konfigurator</span>
+                <span className="text-xs font-bold uppercase tracking-wider text-brand-cyan">Aufbau-Konfigurator</span>
                 <h2 className="text-3xl font-extrabold text-brand-navy tracking-tight">Bereit für Ihr Express-Angebot?</h2>
                 <p className="text-brand-grey text-lg max-w-xl mx-auto">
                   Präzise Taktfertigung sichert Ihren Vorsprung. Das Formular dauert 2 Minuten, wir melden uns innerhalb von 24h.
