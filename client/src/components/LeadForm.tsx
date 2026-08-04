@@ -13,6 +13,7 @@ import {
   trackFormStart,
   trackFormSubmit,
   trackFormSubmitFailed,
+  createEventId,
 } from "@/lib/analytics";
 import { getLeadContext } from "@/lib/leadContext";
 
@@ -185,12 +186,16 @@ export default function LeadForm() {
 
     setIsSubmitting(true);
 
+    // Einmal pro Absendeversuch. Ein Retry erzeugt bewusst eine neue ID.
+    const eventId = createEventId();
+
     try {
       const calculatedScore = calculateLeadScore(data);
 
       // Hidden tracking fields (strictly carried along)
       const trackingData = {
         ...data,
+        event_id: eventId,
         offer_type: "aufbau",
         lead_path: data.lead_type === "paket" ? "B2B-Hersteller-Pfad" : "Standard-Einzel-Pfad",
         leadScore: calculatedScore.points,
@@ -227,7 +232,7 @@ export default function LeadForm() {
       // Wichtig: reportCompleted() VOR setSubmitResult, damit ein direkt
       // folgendes Schließen des Modals NICHT zusätzlich als form_abandon zählt.
       reportCompleted();
-      trackFormSubmit("lp2_expressangebot", totalSteps, {
+      trackFormSubmit("lp2_expressangebot", totalSteps, eventId, {
         lead_grade: serverGrade,
         lead_type: data.lead_type,
       });
