@@ -23,11 +23,10 @@ const leadFormSchema = z.object({
   aufbauart: z.string().min(1, "Bitte wählen Sie eine Aufbauart."),
   fahrgestell_vorhanden: z.enum(["Ja", "Nein"]),
   wunschzeitraum: z.string().min(1, "Bitte wählen Sie einen Wunschzeitraum."),
-  einsatzregion: z.string().min(2, "Bitte geben Sie eine Einsatzregion oder PLZ an."),
   email: z.string().min(1, "Bitte geben Sie Ihre E-Mail-Adresse an.").email("Bitte geben Sie eine gültige E-Mail-Adresse an."),
   vorname: z.string().min(2, "Bitte geben Sie Ihren Vornamen an."),
   nachname: z.string().min(2, "Bitte geben Sie Ihren Nachnamen an."),
-  unternehmen: z.string().min(2, "Bitte geben Sie Ihr Unternehmen an."),
+  unternehmen: z.string().optional(),
   telefon: z.string().optional(),
   spezifikation: z.string().optional(),
   datenschutz_akzeptiert: z.boolean().refine((val) => val === true, {
@@ -35,7 +34,9 @@ const leadFormSchema = z.object({
   }),
 
   // Conditional fields for "paket" (Hersteller-Anfrage)
-  stueckzahl: z.number().optional(),
+  stueckzahl: z
+    .number({ error: "Bitte geben Sie die erwartete Stückzahl an." })
+    .min(1, "Bitte geben Sie mindestens 1 Stück an."),
   taktung: z.string().optional(),
   lieferort: z.string().optional(),
   deadline: z.string().optional(),
@@ -78,7 +79,6 @@ export default function LeadForm() {
       aufbauart: selectedCategory ?? "",
       fahrgestell_vorhanden: "Nein",
       wunschzeitraum: "",
-      einsatzregion: "",
       email: "",
       vorname: "",
       nachname: "",
@@ -275,7 +275,7 @@ export default function LeadForm() {
     let fieldsToValidate: (keyof LeadFormValues)[] = [];
 
     if (step === 1) {
-      fieldsToValidate = ["aufbauart", "fahrgestell_vorhanden", "wunschzeitraum", "einsatzregion", "email"];
+      fieldsToValidate = ["aufbauart", "fahrgestell_vorhanden", "wunschzeitraum"];
     } else if (isPaket && step === 2) {
       fieldsToValidate = ["stueckzahl", "taktung", "lieferort", "deadline"];
     }
@@ -497,38 +497,8 @@ export default function LeadForm() {
                   )}
                 </div>
 
-                {/* Einsatzregion */}
-                <div className="space-y-2">
-                  <label className="block text-xs uppercase font-bold text-brand-navy tracking-wider">Einsatzregion / PLZ *</label>
-                  <input
-                    type="text"
-                    placeholder="z.B. 42799 Leichlingen oder NRW"
-                    {...register("einsatzregion")}
-                    className={inputClass}
-                  />
-                  {errors.einsatzregion && (
-                    <p className="text-xs text-red-500 flex items-center gap-1 mt-1">
-                      <AlertCircle className="h-3.5 w-3.5" /> {errors.einsatzregion.message}
-                    </p>
-                  )}
-                </div>
               </div>
 
-              {/* E-Mail (früh erfasst für Teil-Lead bei Abbruch) */}
-              <div className="space-y-2">
-                <label className="block text-xs uppercase font-bold text-brand-navy tracking-wider">E-Mail-Adresse *</label>
-                <input
-                  type="email"
-                  placeholder="m.mustermann@firma.de"
-                  {...register("email")}
-                  className={inputClass}
-                />
-                {errors.email && (
-                  <p className="text-xs text-red-500 flex items-center gap-1 mt-1">
-                    <AlertCircle className="h-3.5 w-3.5" /> {errors.email.message}
-                  </p>
-                )}
-              </div>
             </div>
           )}
 
@@ -621,9 +591,25 @@ export default function LeadForm() {
                   )}
                 </div>
 
+                {/* E-Mail */}
+                <div className="space-y-2">
+                  <label className="block text-xs uppercase font-bold text-brand-navy tracking-wider">E-Mail-Adresse *</label>
+                  <input
+                    type="email"
+                    placeholder="m.mustermann@firma.de"
+                    {...register("email")}
+                    className={inputClass}
+                  />
+                  {errors.email && (
+                    <p className="text-xs text-red-500 flex items-center gap-1 mt-1">
+                      <AlertCircle className="h-3.5 w-3.5" /> {errors.email.message}
+                    </p>
+                  )}
+                </div>
+
                 {/* Unternehmen */}
                 <div className="space-y-2">
-                  <label className="block text-xs uppercase font-bold text-brand-navy tracking-wider">Unternehmen / Firma *</label>
+                  <label className="block text-xs uppercase font-bold text-brand-navy tracking-wider">Unternehmen (optional)</label>
                   <input
                     type="text"
                     placeholder="Muster GmbH"
@@ -639,7 +625,7 @@ export default function LeadForm() {
 
                 {/* Telefonnummer */}
                 <div className="space-y-2">
-                  <label className="block text-xs uppercase font-bold text-brand-navy tracking-wider">Telefonnummer (Optional)</label>
+                  <label className="block text-xs uppercase font-bold text-brand-navy tracking-wider">Telefonnummer (optional)</label>
                   <input
                     type="tel"
                     placeholder="+49 170 1234567"
@@ -650,7 +636,7 @@ export default function LeadForm() {
 
                 {/* Spezifikation / Freitext */}
                 <div className="space-y-2 md:col-span-2">
-                  <label className="block text-xs uppercase font-bold text-brand-navy tracking-wider">Spezifikationen / Anmerkungen (Optional)</label>
+                  <label className="block text-xs uppercase font-bold text-brand-navy tracking-wider">Spezifikationen / Anmerkungen (optional)</label>
                   <textarea
                     placeholder="Teilen Sie uns hier gerne weitere Details zu Ihrem Projekt mit (z.B. geplantes Trägerfahrzeug, Maße, Sonderwünsche)."
                     rows={3}
