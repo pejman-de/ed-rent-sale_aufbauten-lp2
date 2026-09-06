@@ -233,6 +233,7 @@ export default function LeadForm() {
       // folgendes Schließen des Modals NICHT zusätzlich als form_abandon zählt.
       reportCompleted();
       trackFormSubmit("lp2_expressangebot", totalSteps, eventId, {
+        status_code: response.status,
         lead_grade: serverGrade,
         lead_type: data.lead_type,
       });
