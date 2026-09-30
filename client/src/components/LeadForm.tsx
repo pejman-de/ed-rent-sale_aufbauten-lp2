@@ -30,7 +30,7 @@ const leadFormSchema = z.object({
   telefon: z.string().optional(),
   spezifikation: z.string().optional(),
   datenschutz_akzeptiert: z.boolean().refine((val) => val === true, {
-    message: "Bitte stimmen Sie der Datenschutzerklärung zu.",
+    message: "Bitte bestätigen Sie, dass Sie die Datenschutzerklärung zur Kenntnis genommen haben.",
   }),
 
   // Conditional fields for "paket" (Hersteller-Anfrage)
@@ -659,7 +659,7 @@ export default function LeadForm() {
                     <Link href="/datenschutz" target="_blank" className="text-brand-cyan underline font-semibold hover:text-brand-navy">
                       Datenschutzerklärung
                     </Link>{" "}
-                    gelesen und stimme der Verarbeitung meiner Daten zur Bearbeitung meiner Anfrage zu. *
+                    zur Kenntnis genommen. *
                   </span>
                 </label>
                 {errors.datenschutz_akzeptiert && (
