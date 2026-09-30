@@ -1,20 +1,24 @@
-name: Deploy to GitHub Pages
+name: Deploy to Cloudflare Pages
+
+# Seit dem 30.09.2026 laufen die Landingpages ueber Cloudflare Pages statt
+# GitHub Pages (Auftragsverarbeitungsvertrag mit Cloudflare vorhanden, mit
+# GitHub nicht). Benoetigt die Repository-Secrets CLOUDFLARE_API_TOKEN
+# (Berechtigung "Cloudflare Pages: Edit") und CLOUDFLARE_ACCOUNT_ID.
 
 on:
   push:
     branches: [main]
+  workflow_dispatch:
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
 concurrency:
-  group: pages
+  group: cloudflare-pages
   cancel-in-progress: true
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -25,16 +29,10 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
-      - run: echo "aufbau.ed-rent.de" > dist/public/CNAME
-      - run: cp dist/public/index.html dist/public/404.html
-      - uses: actions/upload-pages-artifact@v3
+      # Die CNAME-Datei braucht nur GitHub Pages.
+      - run: rm -f dist/public/CNAME
+      - uses: cloudflare/wrangler-action@v3
         with:
-          path: ./dist/public
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-    steps:
-      - uses: actions/deploy-pages@v4
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy dist/public --project-name=ed-rent-aufbau --branch=main --commit-dirty=true
